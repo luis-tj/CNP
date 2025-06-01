@@ -71,7 +71,7 @@ class Solver_CNP:
     def popInitial(self):
         print('Pop Initial:')
         # Pruning stage
-        t0_prune = time.process_time()
+        t0_prune = time.perf_counter()
         for _ in range(self.pruning_iters):
             populations = [GA_CNP(self.G, self.node_pool, self.K, self.gene_ops, self.popSize, self.pC, self.pM, self.el, 0, 0, []).population for _ in range(self.pop_num)]
             
@@ -83,7 +83,7 @@ class Solver_CNP:
             votes_nodes = collections.Counter(node for list_pop_i in best_inds for node in list_pop_i)
             self.pruneNodePool(votes_nodes)
             print('Pruning done. Size node pool:',int(round(100 * len(self.node_pool) / self.num_nodes, 0)),'%')
-        t1_prune = time.process_time()
+        t1_prune = time.perf_counter()
 
         # Recording pruning time
         self.pruning_time = t1_prune - t0_prune
@@ -103,7 +103,7 @@ class Solver_CNP:
     def popEvolution(self):
         print('Pop Evolution:')
         # Pruning stage
-        t0_prune = time.process_time()
+        t0_prune = time.perf_counter()
         for _ in range(self.pruning_iters):
             GAs = [GA_CNP(self.G, self.node_pool, self.K, self.gene_ops, self.popSize, self.pC, self.pM, self.el, 0, 0, []) for _ in range(self.pop_num)]
             
@@ -115,7 +115,7 @@ class Solver_CNP:
             votes_nodes = collections.Counter(node for list_pop_i in best_inds for node in list_pop_i)
             self.pruneNodePool(votes_nodes)
             print('Pruning done. Size node pool:',int(round(100 * len(self.node_pool) / self.num_nodes, 0)),'%')
-        t1_prune = time.process_time()
+        t1_prune = time.perf_counter()
 
         # Recording pruning time
         self.pruning_time = t1_prune - t0_prune
@@ -150,7 +150,7 @@ class Solver_CNP:
                 break
 
         # Pruning stage
-        t0_prune = time.process_time()
+        t0_prune = time.perf_counter()
         for _ in range(self.pruning_iters):
             
             # To store chromosomes for each population's initialization
@@ -211,7 +211,7 @@ class Solver_CNP:
             votes_nodes = collections.Counter(node for list_pop_i in best_inds for node in list_pop_i)
             self.pruneNodePool(votes_nodes)
             print('Pruning done. Size node pool:',int(round(100 * len(self.node_pool) / self.num_nodes, 0)),'%')
-        t1_prune = time.process_time()
+        t1_prune = time.perf_counter()
 
         # Recording pruning time
         self.pruning_time = t1_prune - t0_prune
@@ -423,10 +423,10 @@ def my_main():
     # 1st run
     print("Run 1")
     avgByIt_Run = 1 if 1 in runs_avgByIt else 0
-    t0 = time.process_time()
+    t0 = time.perf_counter()
     CNP = Solver_CNP(G['Graph'], G['K'], nIters, pop, pC, pM, el, pop_num, alpha, ret_rate, gene_ops, solv_method, prun_method, rand_inds, combine, copy.deepcopy(features_arrays), avgByIt_Run, greedy_feat)
     bestObj, objInit, bestSol, listBestByIt, listAvgByIt, pruningTime = CNP.search()
-    t1 = time.process_time()
+    t1 = time.perf_counter()
     print("Cost Run 1: ",bestObj)
 
     results_dict['RunsResults'][1]['BestPCList'] = listBestByIt
@@ -445,10 +445,10 @@ def my_main():
         # i-th run
         print("Run ",i + 1)
         avgByIt_Run = 1 if (i + 1) in runs_avgByIt else 0
-        t0 = time.process_time()
+        t0 = time.perf_counter()
         CNP = Solver_CNP(G['Graph'], G['K'], nIters, pop, pC, pM, el, pop_num, alpha, ret_rate, gene_ops, solv_method, prun_method, rand_inds, combine, copy.deepcopy(features_arrays), avgByIt_Run, greedy_feat)
         obj, objInit, sol, listBestByIt, listAvgByIt, pruningTime = CNP.search()
-        t1 = time.process_time()
+        t1 = time.perf_counter()
         print("Cost Run ",i + 1, ": ",obj)
 
         results_dict['RunsResults'][i + 1]['BestPCList'] = listBestByIt

@@ -100,16 +100,17 @@ class GA_CNP:
         return child1, child2
 
 
-    def mutation(self, ind): 
-        if random.random() > self.mutationRate:
-            return
-        index = random.randint(0, self.genSize-1)
-        
-        while True:
-            new_gene = random.choice(self.node_pool)
-            if new_gene not in ind.genes:
-                ind.genes[index] = new_gene
-                break
+    def mutation(self, ind):
+        for index in range(self.genSize):
+            if random.random() > self.mutationRate:
+                continue
+                
+            # Mutate gene, ensuring uniqueness in the chromosome
+            while True:
+                new_gene = random.choice(self.node_pool)
+                if new_gene not in ind.genes:
+                    ind.genes[index] = new_gene
+                    break
 
 
     def newGeneration(self):
