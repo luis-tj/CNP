@@ -1,0 +1,15 @@
+*
+
+!.gitignore
+
+!CNP_Individual.py
+!CNP_GA.py
+!CNP_Solver.py
+
+!Graphs pickle Features/
+!Graphs pickle Features/**
+
+!K_Graphs.json
+!PC_Graphs.json
+
+!CNP.yml
