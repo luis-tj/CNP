@@ -83,22 +83,22 @@ class GA_CNP:
         
     def crossover(self, indA, indB):
         # 2-Children xover
+        # Uniform crossover
         if random.random() > self.crossoverProb:
             child1 = Individual(self.G, self.node_pool, self.genSize, indA)
             child2 = Individual(self.G, self.node_pool, self.genSize, indB)
             return child1, child2
         
-        midP = random.randint(1, self.genSize - 2)
-        p1 = indA[0:midP]
-        p2 = indB[0:midP]
+        swaps_probs = np.random.rand(self.genSize)
+        swaps_idxs = np.where(swaps_probs <= 0.5)[0]
 
-        genes1 = (p1 + [i for i in indB if i not in p1])[:self.genSize]
-        genes2 = (p2 + [i for i in indA if i not in p2])[:self.genSize]
-        
+        genes1 = [indB[i] if i in swaps_idxs else indA[i] for i in range(self.genSize)]
+        genes2 = [indA[i] if i in swaps_idxs else indB[i] for i in range(self.genSize)]
+
         child1 = Individual(self.G, self.node_pool, self.genSize, genes1)
         child2 = Individual(self.G, self.node_pool, self.genSize, genes2)
         return child1, child2
-
+    
 
     def mutation(self, ind):
         for index in range(self.genSize):
