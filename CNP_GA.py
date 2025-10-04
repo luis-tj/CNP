@@ -145,8 +145,9 @@ class GA_CNP:
 
     def GAStep(self):
         # Promote elite chromosomes to next generation and compute the rest with self.newGeneration()
-        self.population[:self.elites] = heapq.nsmallest(self.elites, self.population, key=lambda ind: ind.getFitness())
+        elites_to_next_gen = heapq.nsmallest(self.elites, self.population, key=lambda ind: ind.getFitness())
         self.newGeneration()
+        self.population[:self.elites] = elites_to_next_gen
 
 
     def search(self):
