@@ -57,28 +57,23 @@ class GA_CNP:
             self.best = candidate.copy()
 
 
-    def rouletteSelection(self):
-        # Get the fitness of every chromosome
-        fitness_inds = np.array([[ind.getFitness() for ind in self.population]])
-
-        # Get the maximum and modify the fitness of each chromosome. Modification responds to minimization problem
-        max_fitness = np.max(fitness_inds)                                        
-        modified_fitness_inds = max_fitness + 1 - fitness_inds
-
-        # Calculate probabilities for the Roulette
-        prob_inds = modified_fitness_inds / np.sum(modified_fitness_inds)
-        cummulative_prob_inds = np.cumsum(prob_inds)
-
+    def binaryTournamentSelection(self):
         # Total chrmosomes (parents) to be selected. Each pair of parents will generate 2 children
         extra_inds = self.popSize - self.elites
         if extra_inds % 2 != 0:
             extra_inds += 1
 
-        # Spin Roulette "extra_inds" times
-        spins = np.random.rand(extra_inds)
-        inds_idxs = np.searchsorted(cummulative_prob_inds, spins)
-        
-        return [self.population[i].copy() for i in inds_idxs]
+        # Number of candidates across all tournaments (binary)
+        n_candidates = extra_inds * 2
+
+        # Candidates selected with replacement
+        candidates_idxs = list(np.random.randint(0, self.popSize, size=n_candidates))
+
+        # Tournaments
+        tournaments = [(candidates_idxs[i], candidates_idxs[i+1]) for i in range(0, len(candidates_idxs), 2)]
+
+        # Get surviving indexes from the tournaments
+        return [self.population[idx1].copy() if self.population[idx1].getFitness() <= self.population[idx2].getFitness() else self.population[idx2].copy() for idx1, idx2 in tournaments]
 
         
     def crossover(self, indA, indB):
@@ -114,8 +109,8 @@ class GA_CNP:
 
 
     def newGeneration(self):
-        # Chromosomes from Roulette selection
-        selected_inds = self.rouletteSelection()
+        # Chromosomes from selection
+        selected_inds = self.binaryTournamentSelection()
         
         # Form pairs of parents
         pairs_of_parents = [(selected_inds[i], selected_inds[i+1]) for i in range(0, len(selected_inds), 2)]
