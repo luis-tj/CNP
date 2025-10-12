@@ -89,6 +89,9 @@ class GA_CNP:
 
         genes1 = list(set([indB[i] if i in swaps_idxs else indA[i] for i in range(self.genSize)]))
         genes2 = list(set([indA[i] if i in swaps_idxs else indB[i] for i in range(self.genSize)]))
+
+        random.shuffle(genes1)
+        random.shuffle(genes2)
         
         # Preserve uniqueness
         if len(genes1) < self.genSize:
