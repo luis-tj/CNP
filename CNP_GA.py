@@ -87,8 +87,14 @@ class GA_CNP:
         swaps_probs = np.random.rand(self.genSize)
         swaps_idxs = np.where(swaps_probs <= 0.5)[0]
 
-        genes1 = [indB[i] if i in swaps_idxs else indA[i] for i in range(self.genSize)]
-        genes2 = [indA[i] if i in swaps_idxs else indB[i] for i in range(self.genSize)]
+        genes1 = list(set([indB[i] if i in swaps_idxs else indA[i] for i in range(self.genSize)]))
+        genes2 = list(set([indA[i] if i in swaps_idxs else indB[i] for i in range(self.genSize)]))
+
+        # Preserve uniqueness
+        if len(genes1) < self.genSize:
+            genes1.extend([i for i in indB if i not in genes1])
+        if len(genes2) < self.genSize:
+            genes2.extend([i for i in indA if i not in genes2])
 
         child1 = Individual(self.G, self.node_pool, self.genSize, genes1)
         child2 = Individual(self.G, self.node_pool, self.genSize, genes2)
